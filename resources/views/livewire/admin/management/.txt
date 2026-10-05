@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Http\Livewire\Admin\Management;
+
+use Livewire\Component;
+use App\Models\role;
+use App\Models\assignpermission;
+use App\Models\permission;
+class RolePermission extends Component
+{
+    // mohsin ali
+    public $pers = [];
+    public $permission_id;
+    public $role;
+    // public $assignpermission;
+    public function render()
+    {
+        // $role=role::all();
+        $role = $this->role;
+        $permission = permission::orderby('id','desc')->get();
+        $assignpermission=assignpermission::where('role_id', $role->id)->get();
+        return view('livewire.admin.management.role-permission',compact('permission','role','assignpermission'));
+    }
+    // mount ..
+    public function mount($id){
+        $this->role = role::find($id);
+        // $this->permission = permission::find($id);
+    }
+    public function save($id){
+        // $this->role = role::find($id);
+        // $this->permission = permission::find($id);
+        // $role->syncPermissions($this->permission);
+        assignpermission::all();
+        foreach($this->pers as $index => $per){
+           $assignpermission = new assignpermission;
+           $assignpermission->role_id = $id;
+           $assignpermission->permission_id = $index;
+           $assignpermission->save();  
+           return back()->with('success',"permission assign ");
+        }  
+        
+    }
+}
